@@ -1,4 +1,5 @@
-# full_stack_template
+# full_stack_template :rocket: :rocket: :rocket: 
+Before starting be sure to fork this repo to your own account since no push-restrictions have been set on this repo currently :smiley:
 Welcome to this project template! This repository is designed to help you get started quickly with both the backend and frontend components already set up.
 Take this template with a grain of salt and configure the general structure if you think it makes better sense - also be sure to consult any LLM for lightning fast development
 # Backend 
