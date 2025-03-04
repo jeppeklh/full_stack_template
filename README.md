@@ -20,7 +20,8 @@ This setup allows flexibility in configuring your preferred database system whil
 # Frontend
 The frontend of this project is built using TypeScript and React, with routing handled by react-router-dom v7
 The initial folder structure has been configured but feel free to adjust it
-
+ 
 ## Required installation
 Node 20^ (preferably use nvm to manage multiple version you may already have installed)
 
+## A boilerplate readme can be found in the frontend directory for further information
