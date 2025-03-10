@@ -8,7 +8,7 @@ any IDE
 .Net sdk 8.*.*
 
 ## Backend Architecture
-The backend is structured using the Onion Architecture (also known as Clean Architecture), promoting separation of concerns and scalability. This structure ensures that core business logic remains independent of external frameworks and tools, allowing easier maintenance and testing.
+The backend is structured using the Onion Architecture (Clean Architecture ish without the CQRS pattern), promoting separation of concerns and scalability. This structure ensures that core business logic remains independent of external frameworks and tools, allowing easier maintenance and testing.
 
 ### Key Features:
 Core Layer: Contains the domain entities and application logic.
