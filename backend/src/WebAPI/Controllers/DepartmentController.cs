@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Domain.Entities;
+using Domain.Interfaces.Services;
 using Infrastructure.Mapping;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace WebAPI.Controllers
 	{
 		private readonly VagtplanDbContext _context;
 		private readonly ILogger<DepartmentController> _logger;
+
 
 		public DepartmentController(VagtplanDbContext context, ILogger<DepartmentController> logger)
 		{
