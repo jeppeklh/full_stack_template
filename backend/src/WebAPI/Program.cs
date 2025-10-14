@@ -2,6 +2,7 @@ using Domain.Entities;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
         .AddEntityFrameworkStores<VagtplanDbContext>()
         .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 var app = builder.Build();
 
