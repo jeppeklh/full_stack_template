@@ -24,6 +24,15 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
+// adds traceId to http responses for correlation in logs
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+    };
+});
+
 var app = builder.Build();
 
 
