@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces.Repositories;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,15 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
         .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+// adds traceId to http responses for correlation in logs
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+    };
+});
 
 var app = builder.Build();
 
@@ -48,6 +58,28 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Maps exceptions to ProblemDetails JSON with relevant status codes
+app.UseExceptionHandler(appError =>
+{
+    appError.Run(async context =>
+    {
+        var feature = context.Features.Get<IExceptionHandlerFeature>();
+        var exception = feature?.Error;
+        var status = exception switch
+        {
+            KeyNotFoundException => StatusCodes.Status404NotFound,
+            ArgumentException => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError
+        };
+        context.Response.StatusCode = status;
+        await Results.Problem(
+            title: exception?.GetType().Name,
+            detail: exception?.Message,
+            statusCode: status
+        ).ExecuteAsync(context);
+    });
+});
 
 app.UseHttpsRedirection();
 
