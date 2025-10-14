@@ -59,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Maps exceptions to ProblemDetails JSON with relevant status codes
 app.UseExceptionHandler(appError =>
 {
     appError.Run(async context =>
