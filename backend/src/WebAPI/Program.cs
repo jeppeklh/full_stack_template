@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces.Repositories;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Diagnostics;
+using Domain.Interfaces.Services;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
         .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 // adds traceId to http responses for correlation in logs
 builder.Services.AddProblemDetails(options =>
 {

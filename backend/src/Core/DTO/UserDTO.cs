@@ -14,11 +14,13 @@ namespace Domain.DTO
         public string FullName { get; set; }
 
         public UserStatus UserStatus { get; set; }
-
-        [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
+        
+        // i dont understand why we have this range validation on a guid
+        // [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
         public Guid? DepartmentId { get; set; } = Guid.Empty;
 
-        [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
+        // i dont understand why we have this range validation on a guid
+        // [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
         public Guid? DoctorTypeId { get; set; } = Guid.Empty;
     }
 }
