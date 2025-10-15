@@ -1,14 +1,14 @@
-import { Outlet, Link } from "react-router-dom";
-
 export default function App() {
   return (
-    <>
-      <nav style={{ padding: 12, borderBottom: "1px solid #eee" }}>
-        <Link to="/">Home</Link>
-      </nav>
-      <main style={{ padding: 16 }}>
-        <Outlet />
-      </main>
-    </>
+    <main
+      style={{
+        fontFamily: "system-ui",
+        padding: 24,
+        maxWidth: 900,
+        margin: "0 auto",
+      }}
+    >
+      <h1>React + ASP.NET Core</h1>
+    </main>
   );
 }
