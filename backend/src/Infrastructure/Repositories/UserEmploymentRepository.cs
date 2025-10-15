@@ -8,29 +8,19 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class UserEmploymentRepository : IUserRepository
+    public class UserEmploymentRepository : IUserEmploymentRepository
     {
-        public Task<User> AddUserAsync(User user)
+        public Task AddEmploymentPeriodAsync(EmploymentPeriod employmentPeriod, Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteUserAsync(Guid userId)
+        public Task<EmploymentPeriod?> GetEmploymentPeriodByUserIdAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetAdminInfoAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<object>> GetUsersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> UpdateUserAsync(User user)
+        public Task<IEnumerable<User>> GetUsersWithEmploymentAsync()
         {
             throw new NotImplementedException();
         }

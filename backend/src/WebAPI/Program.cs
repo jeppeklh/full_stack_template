@@ -21,7 +21,7 @@ builder.Services.AddDbContext<VagtplanDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(opts => opts.User.RequireUniqueEmail = true)
         .AddEntityFrameworkStores<VagtplanDbContext>()
         .AddDefaultTokenProviders();
 
@@ -45,6 +45,7 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<VagtplanDbContext>();
     try
     {
+        context.Database.Migrate();
         context.SeedData();
     }
     catch

@@ -13,7 +13,8 @@ namespace Infrastructure.Mapping
                 FullName = dto.FullName,
                 UserStatus = dto.UserStatus,
                 DepartmentId = dto.DepartmentId,
-                DoctorTypeId = dto.DoctorTypeId
+                DoctorTypeId = dto.DoctorTypeId,
+                Email = dto.Email
             };
         }
 
@@ -25,7 +26,8 @@ namespace Infrastructure.Mapping
                 FullName = entity.FullName,
                 UserStatus = entity.UserStatus,
                 DepartmentId = entity.DepartmentId,
-                DoctorTypeId = entity.DoctorTypeId
+                DoctorTypeId = entity.DoctorTypeId,
+                Email = entity.Email
             };
         }
     }
