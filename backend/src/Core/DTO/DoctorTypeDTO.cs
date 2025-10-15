@@ -12,7 +12,8 @@ namespace Domain.DTO
         [StringLength(10, MinimumLength = 1, ErrorMessage = "Doctor type abbrevation must be longer than 0 characters, and cannot exceed 10 characters.")]
         public string Abbreviation { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
+        // i dont understand why we have this range validation on a guid
+        // [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
         public Guid? DepartmentId { get; set; }
     }
 }
