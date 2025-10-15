@@ -4,6 +4,8 @@ namespace Domain.DTO
 {
         public class EmploymentPeriodDTO
         {
+                public Guid Id { get; set; }
+
                 [DataType(DataType.Date), DisplayFormat(DataFormatString = "{dd/MM/yyyy}", ApplyFormatInEditMode = true)]
                 public DateTime StartDate { get; set; }
 
