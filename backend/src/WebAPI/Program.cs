@@ -21,12 +21,17 @@ builder.Services.AddDbContext<VagtplanDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(opts => opts.User.RequireUniqueEmail = true)
         .AddEntityFrameworkStores<VagtplanDbContext>()
         .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserEmploymentRepository, UserEmploymentRepository>();
+builder.Services.AddScoped<IUserEmploymentService, UserEmploymentService>();
+
 // adds traceId to http responses for correlation in logs
 builder.Services.AddProblemDetails(options =>
 {
@@ -45,6 +50,7 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<VagtplanDbContext>();
     try
     {
+        context.Database.Migrate();
         context.SeedData();
     }
     catch

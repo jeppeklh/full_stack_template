@@ -169,6 +169,13 @@ namespace WebAPI.Controllers
                     return NotFound(new { message = "Doctor type not found" });
                 }
 
+                // prevent deletion if any users are associated with DoctorType
+                if (_context.Users.Any(u => u.DoctorTypeId == id))
+                {
+                    _logger.LogWarning("Doctor type {DoctorTypeId} is in use and cannot be deleted", id);
+                    return Conflict(new { message = "Doctor type is in use and cannot be deleted" });
+                }
+
                 _context.DoctorTypes.Remove(doctorType);
                 await _context.SaveChangesAsync();
 
