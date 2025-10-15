@@ -1,5 +1,6 @@
 ﻿using Domain.DTO;
 using Domain.Entities;
+using Domain.Interfaces.Services;
 using Infrastructure.Mapping;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Mvc;
@@ -13,216 +14,96 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EmploymentPeriodController : ControllerBase
     {
-        private readonly VagtplanDbContext _context;
-        private readonly ILogger<EmploymentPeriodController> _logger;
+        private readonly IUserEmploymentService _userEmploymentService;
 
-        public EmploymentPeriodController(VagtplanDbContext context, ILogger<EmploymentPeriodController> logger)
-        {
-            _context = context;
-            _logger = logger;
-        }
+        public EmploymentPeriodController(IUserEmploymentService userEmploymentService) => _userEmploymentService = userEmploymentService;
 
-        [HttpGet("{employmentPeriodId}")]
-        public async Task<IActionResult> GetById(Guid employmentPeriodId)
-        {
-            try
-            {
-                var employmentPeriod = await _context.EmploymentPeriods
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(e => e.Id == employmentPeriodId);
+        // Get all (for a user) is done by user controller
+        // [HttpGet("{employmentPeriodId}")]
+        // public async Task<IActionResult> GetById(Guid employmentPeriodId)
+        // {
+        //     try
+        //     {
+        //         var employmentPeriod = await _context.EmploymentPeriods
+        //             .AsNoTracking()
+        //             .FirstOrDefaultAsync(e => e.Id == employmentPeriodId);
 
-                if (employmentPeriod == null)
-                {
-                    _logger.LogWarning("Employment period {EmploymentPeriodId} not found", employmentPeriodId);
-                    return NotFound(new { message = "Employment period not found" });
-                }
+        //         if (employmentPeriod == null)
+        //         {
+        //             _logger.LogWarning("Employment period {EmploymentPeriodId} not found", employmentPeriodId);
+        //             return NotFound(new { message = "Employment period not found" });
+        //         }
 
-                return Ok(employmentPeriod.ToDTO());
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while retrieving employment period {EmploymentPeriodId}", employmentPeriodId);
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while retrieving employment period {EmploymentPeriodId}", employmentPeriodId);
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
-        }
+        //         return Ok(employmentPeriod.ToDTO());
+        //     }
+        //     catch (DbException dbEx)
+        //     {
+        //         _logger.LogError(dbEx, "Database error occurred while retrieving employment period {EmploymentPeriodId}", employmentPeriodId);
+        //         return StatusCode(500, new { message = "A database error occurred" });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "Unexpected error occurred while retrieving employment period {EmploymentPeriodId}", employmentPeriodId);
+        //         return StatusCode(500, new { message = "An unexpected error occurred" });
+        //     }
+        // }
 
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                var employmentPeriods = await _context.EmploymentPeriods
-                    .AsNoTracking()
-                    .ToListAsync();
+        // [HttpGet("GetAll")]
+        // public async Task<IActionResult> GetAll()
+        // {
+        //     try
+        //     {
+        //         var employmentPeriods = await _context.EmploymentPeriods
+        //             .AsNoTracking()
+        //             .ToListAsync();
 
-                if (!employmentPeriods.Any())
-                {
-                    _logger.LogWarning("No employment periods found");
-                    return NotFound(new { message = "No employment periods found" });
-                }
+        //         if (!employmentPeriods.Any())
+        //         {
+        //             _logger.LogWarning("No employment periods found");
+        //             return NotFound(new { message = "No employment periods found" });
+        //         }
 
-                return Ok(employmentPeriods);
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while retrieving employment periods");
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while retrieving employment periods");
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
-        }
+        //         return Ok(employmentPeriods);
+        //     }
+        //     catch (DbException dbEx)
+        //     {
+        //         _logger.LogError(dbEx, "Database error occurred while retrieving employment periods");
+        //         return StatusCode(500, new { message = "A database error occurred" });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "Unexpected error occurred while retrieving employment periods");
+        //         return StatusCode(500, new { message = "An unexpected error occurred" });
+        //     }
+        // }
 
 
         [HttpGet("GetForUser/{userId}")]
-        public async Task<IActionResult> GetForUser(Guid userId)
+        public async Task<IActionResult> GetForUser(Guid userId, CancellationToken ct = default)
         {
-            try
-            {
-                var employmentPeriods = await _context.Users
-                    .Where(u => u.Id == userId)
-                    .Select(u => u.EmploymentPeriods)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync();
-
-                if (employmentPeriods == null)
-                {
-                    _logger.LogWarning("No employment periods found for user {UserId}", userId);
-                    return NotFound(new { message = "No employment periods found for this user" });
-                }
-
-                return Ok(employmentPeriods.Select(e => e.ToDTO()));
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while retrieving employment periods for user {UserId}", userId);
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while retrieving employment periods for user {UserId}", userId);
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
+            var periods = await _userEmploymentService.GetByUserIdAsync(userId, ct);
+            return Ok(periods);
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Create([FromBody] EmploymentPeriodDTO dto)
+        public async Task<IActionResult> Create(Guid userId, [FromBody] EmploymentPeriodDTO dto, CancellationToken ct = default)
         {
-            try
-            {
-                if (dto == null)
-                {
-                    _logger.LogWarning("DTO was null");
-                    return BadRequest(new { message = "DTO wasn't provided" });
-                }
-
-                if (dto.StartDate == default)
-                {
-                    _logger.LogWarning("StartDate is required");
-                    return BadRequest(new { message = "StartDate is required" });
-                }
-
-                var employmentPeriod = dto.ToEntity();
-
-                await _context.EmploymentPeriods.AddAsync(employmentPeriod);
-                await _context.SaveChangesAsync();
-
-                return Ok(employmentPeriod.ToDTO());
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while creating employment period");
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while creating employment period");
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
+            var id = await _userEmploymentService.CreateAsync(userId, dto, ct);
+            return CreatedAtAction(nameof(GetForUser), new { userId }, new { employmentPeriodId = id }); // return the userId and employmentPeriodId in the response body
         }
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] EmploymentPeriod entity)
+        [HttpPut("{employmentPeriodId:guid}")]
+        public async Task<IActionResult> Update(Guid userId, Guid employmentPeriodId, [FromBody] EmploymentPeriodDTO dto, CancellationToken ct = default)
         {
-            try
-            {
-                if (entity == null)
-                {
-                    _logger.LogWarning("DTO was null");
-                    return BadRequest(new { message = "DTO wasn't provided" });
-                }
-
-                var existingEmploymentPeriod = await _context.EmploymentPeriods
-                    .FirstOrDefaultAsync(e => e.Id == entity.Id);
-
-                if (existingEmploymentPeriod == null)
-                {
-                    _logger.LogWarning("Employment period {EmploymentPeriodId} not found", entity.Id);
-                    return NotFound(new { message = "Employment period not found" });
-                }
-
-                existingEmploymentPeriod.StartDate = entity.StartDate;
-                existingEmploymentPeriod.EndDate = entity.EndDate;
-                existingEmploymentPeriod.UserId = entity.UserId;
-
-                await _context.SaveChangesAsync();
-
-                return Ok(existingEmploymentPeriod.ToDTO());
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while updating employment period {EmploymentPeriodId}", entity.Id);
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while updating employment period {EmploymentPeriodId}", entity.Id);
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
+            await _userEmploymentService.UpdateAsync(employmentPeriodId, dto, ct);
+            return NoContent();
         }
 
-        [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{employmentPeriodId:guid}")]
+        public async Task<IActionResult> Delete(Guid userId, Guid employmentPeriodId, CancellationToken ct = default)
         {
-            try
-            {
-                if (id == default)
-                {
-                    _logger.LogWarning("Id was null");
-                    return BadRequest(new { message = "Id wasn't provided" });
-                }
-
-                var employmentPeriod = await _context.EmploymentPeriods
-                    .FindAsync(id);
-
-                if (employmentPeriod == null)
-                {
-                    _logger.LogWarning("Employment period {EmploymentPeriodId} not found", id);
-                    return NotFound(new { message = "Employment period not found" });
-                }
-
-                _context.EmploymentPeriods.Remove(employmentPeriod);
-                await _context.SaveChangesAsync();
-
-                return Ok(employmentPeriod.ToDTO());
-            }
-            catch (DbException dbEx)
-            {
-                _logger.LogError(dbEx, "Database error occurred while deleting employment period {EmploymentPeriodId}", id);
-                return StatusCode(500, new { message = "A database error occurred" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while deleting employment period {EmploymentPeriodId}", id);
-                return StatusCode(500, new { message = "An unexpected error occurred" });
-            }
+            await _userEmploymentService.DeleteAsync(employmentPeriodId, ct);
+            return NoContent();
         }
     }
 }

@@ -30,6 +30,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserEmploymentRepository, UserEmploymentRepository>();
+builder.Services.AddScoped<IUserEmploymentService, UserEmploymentService>();
 
 // adds traceId to http responses for correlation in logs
 builder.Services.AddProblemDetails(options =>

@@ -10,7 +10,7 @@ using Infrastructure.Mapping;
 
 namespace Application.Services
 {
-    internal class UserEmploymentService : IUserEmploymentService
+    public class UserEmploymentService : IUserEmploymentService
     {
         private readonly IUserEmploymentRepository _userEmploymentRepository;
         private readonly IUserRepository _userRepository;
