@@ -78,14 +78,14 @@ namespace WebAPI.Controllers
         // }
 
 
-        [HttpGet("GetForUser/{userId}")]
+        [HttpGet]
         public async Task<IActionResult> GetForUser(Guid userId, CancellationToken ct = default)
         {
             var periods = await _userEmploymentService.GetByUserIdAsync(userId, ct);
             return Ok(periods);
         }
 
-        [HttpPost("Add")]
+        [HttpPost]
         public async Task<IActionResult> Create(Guid userId, [FromBody] EmploymentPeriodDTO dto, CancellationToken ct = default)
         {
             var id = await _userEmploymentService.CreateAsync(userId, dto, ct);

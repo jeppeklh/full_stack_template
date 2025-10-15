@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.DTO;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -25,9 +26,11 @@ namespace Application.Services
             if (await _userRepository.ExistsByEmailAsync(userDto.Email, null, ct))
                 throw new ArgumentException($"A user with email {userDto.Email} already exists.");
 
-            var user = userDto.ToEntity();
-
+            var user = new User { Id = Guid.NewGuid(), SecurityStamp = Guid.NewGuid().ToString() };
+            user.UpdateFromDto(userDto);
+            user.EmailConfirmed = true; 
             var createdUser = await _userRepository.AddUserAsync(user, ct);
+
             return createdUser.Id;
         }
 

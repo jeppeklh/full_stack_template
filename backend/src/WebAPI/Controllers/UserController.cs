@@ -25,14 +25,14 @@ namespace WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken ct = default)
         {
             var users = await _userService.GetUsersAsync(true, ct);
             return Ok(users);
         }
 
-        [HttpGet("GetAdminInfo")]
+        [HttpGet("admin")]
         public async Task<IActionResult> GetAdminInfo(CancellationToken ct = default)
         {
             var admin = await _userService.GetAdminAsync(ct);
@@ -70,14 +70,14 @@ namespace WebAPI.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPost("Add")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDTO dto, CancellationToken ct = default)
         {
             var id = await _userService.CreateUserAsync(dto, ct);
             return CreatedAtAction(nameof(GetById), new { userId = id }, null); // Return 201, null body
         }
 
-        [HttpPut("Update")]
+        [HttpPut("{userId:guid}")]
         public async Task<IActionResult> Update(Guid userId, [FromBody] UserDTO dto, CancellationToken ct = default)
         {
             await _userService.UpdateUserAsync(userId, dto, ct);
