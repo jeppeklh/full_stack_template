@@ -1,14 +1,11 @@
+import { AppShell } from "./components/layout/AppShell";
+
 export default function App() {
   return (
-    <main
-      style={{
-        fontFamily: "system-ui",
-        padding: 24,
-        maxWidth: 900,
-        margin: "0 auto",
-      }}
-    >
-      <h1>React + ASP.NET Core</h1>
-    </main>
+    <AppShell>
+      <div className="min-h-screen flex items-center justify-center bg-muted/10">
+        <h1 className="text-3xl font-semibold">Frontend yay!</h1>
+      </div>
+    </AppShell>
   );
 }
