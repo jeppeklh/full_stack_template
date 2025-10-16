@@ -1,11 +1,11 @@
 import { AppShell } from "./components/layout/AppShell";
-import { PersonnelGroupPreview } from "./components/personnel/PersonnelGroupPreview";
-import { PersonnelGroupTable } from "./components/personnel/PersonnelGroupTable";
+import { PersonnelGroupPage } from "./components/personnel/PersonnelGroupPage";
+
 
 export default function App() {
   return (
     <AppShell>
-      <PersonnelGroupTable />
+      <PersonnelGroupPage />
     </AppShell>
   );
 }
