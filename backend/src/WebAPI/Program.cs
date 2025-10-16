@@ -41,6 +41,17 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowAnyOrigin();
+    });
+});
+
 var app = builder.Build();
 
 
@@ -88,6 +99,11 @@ app.UseExceptionHandler(appError =>
         ).ExecuteAsync(context);
     });
 });
+
+app.UseCors(policy => policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin());
 
 app.UseHttpsRedirection();
 

@@ -22,11 +22,14 @@ namespace Infrastructure.Mapping
         {
             return new UserDTO
             {
+                Id = entity.Id,
                 Initials = entity.Initials,
                 FullName = entity.FullName,
                 UserStatus = entity.UserStatus,
                 DepartmentId = entity.DepartmentId,
+                DepartmentName = entity.Department?.Name,
                 DoctorTypeId = entity.DoctorTypeId,
+                DoctorTypeName = entity.DoctorType?.Name,
                 Email = entity.Email
             };
         }
