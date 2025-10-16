@@ -19,6 +19,7 @@ namespace Infrastructure.Mapping
         {
             return new DepartmentDTO
             {
+                Id = entity.Id,
                 Name = entity.Name,
                 Address = entity.Address,
                 DepartmentTypeId = entity.DepartmentTypeId
