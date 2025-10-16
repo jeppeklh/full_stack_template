@@ -9,10 +9,15 @@ export function PersonnelGroupPreview() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Overlæge</CardTitle>
+        <CardTitle>Personalegrupper</CardTitle>
       </CardHeader>
-      <CardContent>
-        <p>Abbreviation: OVL</p>
+      <CardContent className="space-y-2">
+        {demoGroups.map((group) => (
+          <div key={group.id} className="flex justify-between text-sm">
+            <span>{group.name}</span>
+            <span className="text-muted-foreground">{group.abbreviation}</span>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );
