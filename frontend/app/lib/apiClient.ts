@@ -4,7 +4,7 @@ export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5166",
   headers: { "Content-Type": "application/json" },
   timeout: 10000, // 10 seconds
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 export const get = <T>(url: string, params?: Record<string, unknown>) =>

@@ -44,9 +44,10 @@ builder.Services.AddProblemDetails(options =>
 // Enable CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("ReactClient", policy =>
     {
-        policy.AllowAnyHeader()
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowAnyOrigin();
     });
@@ -100,10 +101,7 @@ app.UseExceptionHandler(appError =>
     });
 });
 
-app.UseCors(policy => policy
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowAnyOrigin());
+app.UseCors("ReactClient");
 
 app.UseHttpsRedirection();
 
