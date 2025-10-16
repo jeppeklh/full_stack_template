@@ -21,9 +21,11 @@ import {
 import { usePersonnelGroupList } from "@/hooks/usePersonnelGroup";
 import type { PersonnelGroup, PersonnelGroupPayload } from "@/models/personnel";
 import { PersonnelGroupTable } from "./PersonnelGroupTable";
+import { PersonnelGroupForm } from "./PersonnelGroupForm";
 
 export function PersonnelGroupPage() {
-  const { query } = usePersonnelGroupList();
+  const { query, updateMutation, createMutation, deleteMutation } =
+    usePersonnelGroupList();
   const groups = query.data ?? [];
 
   // States
@@ -41,9 +43,11 @@ export function PersonnelGroupPage() {
   const handleSubmit = (payload: PersonnelGroupPayload) => {
     if (editing) {
       // Update existing group
+      updateMutation.mutate({ id: editing.id, payload });
       console.log("Edit group", { id: editing.id, payload });
     } else {
       // Create new group
+      createMutation.mutate(payload);
       console.log("Create group", payload);
     }
     setDialogOpen(false);
@@ -67,6 +71,13 @@ export function PersonnelGroupPage() {
                 Udfyld felterne og klik Gem for at gemme gruppen.
               </DialogDescription>
             </DialogHeader>
+            <PersonnelGroupForm
+              initialData={editing}
+              onSubmit={handleSubmit}
+              onCancel={() => {
+                setDialogOpen(false);
+              }}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -76,6 +87,7 @@ export function PersonnelGroupPage() {
         onEdit={(group: PersonnelGroup) => {
           console.log("Edit clicked", group);
           setEditing(group);
+          setDialogOpen(true);
         }}
         onDelete={(group: PersonnelGroup) => {
           console.log("Delete clicked", group);
@@ -83,7 +95,12 @@ export function PersonnelGroupPage() {
         }}
       />
 
-      <AlertDialog>
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Bekræft sletning</AlertDialogTitle>
@@ -95,7 +112,10 @@ export function PersonnelGroupPage() {
             <AlertDialogCancel>Annuller</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                if (deleteTarget) console.log("Delete id", deleteTarget.id);
+                if (deleteTarget) {
+                  deleteMutation.mutate(deleteTarget.id);
+                  console.log("Delete id", deleteTarget.id);
+                }
                 setDeleteTarget(null);
               }}
             >
