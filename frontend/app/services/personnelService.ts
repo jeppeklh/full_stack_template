@@ -1,7 +1,7 @@
 import { del, get, post, put } from "@/lib/apiClient";
 import type { Personnel, PersonnelPayload } from "@/models/personnel";
 
-const baseUrl = "/api/users";
+const baseUrl = "/api/User";
 
 // GET /api/users?onlyActive=true|false
 export const getPersonnel = (onlyActive = false) =>
