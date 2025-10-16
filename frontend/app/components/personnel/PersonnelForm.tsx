@@ -122,8 +122,8 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
             <FormItem>
               <FormLabel>Personalegruppe</FormLabel>
               <Select
-                value={field.value ?? ""}
-                onValueChange={(value) => field.onChange(value || undefined)}
+                value={field.value ?? "none"}
+                onValueChange={(value) => field.onChange(value === "none" ? undefined : value)}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -131,7 +131,7 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">Ingen</SelectItem>
+                  <SelectItem value="none">Ingen</SelectItem>
                   {groups.map((group) => (
                     <SelectItem key={group.id} value={group.id}>
                       {group.name}
