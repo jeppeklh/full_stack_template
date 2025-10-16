@@ -7,7 +7,6 @@ import {
   updatePersonnel,
 } from "@/services/personnelService";
 import type { PersonnelPayload } from "@/models/personnel";
-import { create } from "domain";
 
 // Hook to fetch the list of personnel
 export function usePersonnelList(onlyActive = false) {
@@ -24,7 +23,7 @@ export function usePersonnelList(onlyActive = false) {
   const createMutation = useMutation({
     mutationFn: createPersonnel,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["personnel"] });
+      queryClient.invalidateQueries({ queryKey: listKey });
     },
   });
 
@@ -32,7 +31,7 @@ export function usePersonnelList(onlyActive = false) {
     mutationFn: ({ id, payload }: { id: string; payload: PersonnelPayload }) =>
       updatePersonnel(id, payload),
     onSuccess: (_, variables) => { //  ignore the first parameter (data) -  we dont need it
-      queryClient.invalidateQueries({ queryKey: ["personnel"] }); // Invalidate the personnel list query
+      queryClient.invalidateQueries({ queryKey: listKey }); // Invalidate the personnel list query
       queryClient.invalidateQueries({ queryKey: ["personnel", variables.id] }); // Invalidate the specific personnel query
     },
   });
@@ -40,7 +39,7 @@ export function usePersonnelList(onlyActive = false) {
   const deactivateMutation = useMutation({
     mutationFn: deletePersonnel,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["personnel"] });
+      queryClient.invalidateQueries({ queryKey: listKey });
     },
   });
 
