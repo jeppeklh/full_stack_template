@@ -7,13 +7,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import type { PersonnelGroup } from "@/models/personnel";
 
-const demoGroups = [
-  { id: "1", name: "Overlæge", abbreviation: "OVL" },
-  { id: "2", name: "Afdelingslæge", abbreviation: "AFL" },
-];
+interface PersonnelGroupTableProps {
+  groups: PersonnelGroup[];
+  onEdit: (group: PersonnelGroup) => void;
+  onDelete: (group: PersonnelGroup) => void;
+}
 
-export function PersonnelGroupTable() {
+export function PersonnelGroupTable({
+  groups,
+  onEdit,
+  onDelete,
+}: PersonnelGroupTableProps) {
   return (
     <div className="rounded-md border bg-card">
       <Table>
@@ -25,7 +31,7 @@ export function PersonnelGroupTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {demoGroups.map((group) => (
+          {groups.map((group) => (
             <TableRow key={group.id}>
               <TableCell>{group.name}</TableCell>
               <TableCell>{group.abbreviation}</TableCell>
@@ -33,14 +39,14 @@ export function PersonnelGroupTable() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => console.log("Edit clicked", group)}
+                  onClick={() => onEdit(group)}
                 >
                   Rediger
                 </Button>
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={() => console.log("Delete clicked", group)}
+                  onClick={() => onDelete(group)}
                 >
                   Slet
                 </Button>
