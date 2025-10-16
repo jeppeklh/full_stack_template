@@ -30,6 +30,10 @@ export function PersonnelPage() {
   const personnel = query.data ?? [];
   const groups = groupQuery.data ?? [];
 
+  const sortedPersonnel = useMemo(() => {
+    return [...personnel].sort((a, b) => a.fullName.localeCompare(b.fullName));
+  }, [personnel]);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Personnel | null>(null);
   const [deactivateTarget, setDeactivateTarget] = useState<Personnel | null>(
@@ -43,10 +47,6 @@ export function PersonnelPage() {
   if (query.isError) {
     return <div className="text-destructive">Kunne ikke hente personale.</div>;
   }
-
-  const sortedPersonnel = useMemo(() => {
-    return [...personnel].sort((a, b) => a.fullName.localeCompare(b.fullName));
-  }, [personnel]);
 
   const handleSubmit = (payload: PersonnelPayload) => {
     if (editing) {
