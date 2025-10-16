@@ -25,7 +25,8 @@ import { usePersonnelGroupList } from "@/hooks/usePersonnelGroup";
 import { type Personnel, type PersonnelPayload } from "@/models/personnel";
 
 export function PersonnelPage() {
-  const { query } = usePersonnelList(false);
+  const { query, createMutation, updateMutation, deactivateMutation } =
+    usePersonnelList(false);
   const { query: groupQuery } = usePersonnelGroupList();
   const personnel = query.data ?? [];
   const groups = groupQuery.data ?? [];
@@ -50,12 +51,22 @@ export function PersonnelPage() {
 
   const handleSubmit = (payload: PersonnelPayload) => {
     if (editing) {
+      updateMutation.mutate({ id: editing.id, payload });
       console.log("Update personnel", editing.id, payload);
     } else {
+      createMutation.mutate(payload);
       console.log("Create personnel", payload);
     }
     setDialogOpen(false);
     setEditing(null);
+  };
+
+  const handleDeactivate = () => {
+    if (deactivateTarget) {
+      deactivateMutation.mutate(deactivateTarget.id);
+      console.log("Deactivate personnel", deactivateTarget.id);
+    }
+    setDeactivateTarget(null);
   };
 
   return (
@@ -106,14 +117,7 @@ export function PersonnelPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuller</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deactivateTarget) {
-                  console.log("Deaktiver klikket", deactivateTarget.id);
-                }
-                setDeactivateTarget(null);
-              }}
-            >
+            <AlertDialogAction onClick={handleDeactivate}>
               Bekræft
             </AlertDialogAction>
           </AlertDialogFooter>
