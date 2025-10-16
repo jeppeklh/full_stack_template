@@ -23,6 +23,7 @@ import { PersonnelForm } from "./PersonnelForm";
 import { usePersonnelList } from "@/hooks/usePersonnel";
 import { usePersonnelGroupList } from "@/hooks/usePersonnelGroup";
 import { type Personnel, type PersonnelPayload } from "@/models/personnel";
+import { useDepartments } from "@/hooks/useDepartments";
 
 export function PersonnelPage() {
   const { query, createMutation, updateMutation, deactivateMutation } =
@@ -30,6 +31,12 @@ export function PersonnelPage() {
   const { query: groupQuery } = usePersonnelGroupList();
   const personnel = query.data ?? [];
   const groups = groupQuery.data ?? [];
+
+  const {
+    data: departments = [],
+    isLoading: departmentsLoading,
+    isError: departmentsError,
+  } = useDepartments();
 
   const sortedPersonnel = useMemo(() => {
     return [...personnel].sort((a, b) => a.fullName.localeCompare(b.fullName));
@@ -87,6 +94,7 @@ export function PersonnelPage() {
             <PersonnelForm
               initialData={editing}
               groups={groups}
+              departments={departments}
               onSubmit={handleSubmit}
               onCancel={() => setDialogOpen(false)}
             />

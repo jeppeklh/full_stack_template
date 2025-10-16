@@ -26,6 +26,7 @@ import {
   type PersonnelGroup,
   type PersonnelPayload,
 } from "@/models/personnel";
+import type { Department } from "@/models/department";
 
 const schema = z.object({
   initials: z
@@ -38,7 +39,8 @@ const schema = z.object({
     .min(3, "Navn skal være mindst 3 karakterer")
     .max(100, "Navn må maks være 100 karakterer"),
   email: z.email("Ugyldig emailadresse"),
-  doctorTypeId: z.uuid().optional().or(z.literal("")),
+  doctorTypeId: z.uuid().optional().or(z.literal("none")),
+  departmentId: z.uuid().optional().or(z.literal("none")),
   active: z.boolean(),
 });
 
@@ -47,18 +49,26 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   initialData?: Personnel | null;
   groups: PersonnelGroup[];
+  departments: Department[];
   onSubmit: (payload: PersonnelPayload) => void;
   onCancel: () => void;
 }
 
-export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props) {
+export function PersonnelForm({
+  initialData,
+  groups,
+  departments,
+  onSubmit,
+  onCancel,
+}: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       initials: initialData?.initials ?? "",
       fullName: initialData?.fullName ?? "",
       email: initialData?.email ?? "",
-      doctorTypeId: initialData?.doctorTypeId ?? "",
+      doctorTypeId: initialData?.doctorTypeId ?? "none",
+      departmentId: initialData?.departmentId ?? "none",
       active: initialData?.userStatus !== UserStatus.Inactive,
     },
   });
@@ -68,7 +78,8 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
       initials: values.initials,
       fullName: values.fullName,
       email: values.email,
-      doctorTypeId: values.doctorTypeId || null,
+      departmentId: values.departmentId === "none" ? null : values.departmentId,
+      doctorTypeId: values.doctorTypeId === "none" ? null : values.doctorTypeId,
       userStatus: values.active ? UserStatus.Active : UserStatus.Inactive,
     });
   });
@@ -123,7 +134,9 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
               <FormLabel>Personalegruppe</FormLabel>
               <Select
                 value={field.value ?? "none"}
-                onValueChange={(value) => field.onChange(value === "none" ? undefined : value)}
+                onValueChange={(value) =>
+                  field.onChange(value === "none" ? undefined : value)
+                }
               >
                 <FormControl>
                   <SelectTrigger>
@@ -145,6 +158,31 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
         />
         <FormField
           control={form.control}
+          name="departmentId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Afdeling</FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vælg afdeling" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none">Ingen</SelectItem>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept.id} value={dept.id}>
+                      {dept.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="active"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between rounded-md border p-3">
@@ -155,7 +193,10 @@ export function PersonnelForm({ initialData, groups, onSubmit, onCancel }: Props
                 </FormDescription>
               </div>
               <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
             </FormItem>
           )}
