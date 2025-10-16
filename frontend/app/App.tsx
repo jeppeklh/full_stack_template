@@ -1,14 +1,11 @@
+import { AppShell } from "./components/layout/AppShell";
+import { PersonnelGroupPreview } from "./components/personnel/PersonnelGroupPreview";
+import { PersonnelGroupTable } from "./components/personnel/PersonnelGroupTable";
+
 export default function App() {
   return (
-    <main
-      style={{
-        fontFamily: "system-ui",
-        padding: 24,
-        maxWidth: 900,
-        margin: "0 auto",
-      }}
-    >
-      <h1>React + ASP.NET Core</h1>
-    </main>
+    <AppShell>
+      <PersonnelGroupTable />
+    </AppShell>
   );
 }
