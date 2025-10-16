@@ -14,12 +14,12 @@ import {
 import type { PersonnelGroup, PersonnelGroupPayload } from "@/models/personnel";
 
 // Validation schema
-const scema = z.object({
+const schema = z.object({
   name: z.string().min(1, "Navn er påkrævet"),
   abbreviation: z.string().min(1, "Forkortelse er påkrævet"),
 });
 
-type FormValues = z.infer<typeof scema>;
+type FormValues = z.infer<typeof schema>;
 
 interface Props {
   initialData?: PersonnelGroup | null;
@@ -29,7 +29,7 @@ interface Props {
 
 export function PersonnelGroupForm({ initialData, onSubmit, onCancel }: Props) {
   const form = useForm<FormValues>({
-    resolver: zodResolver(scema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: initialData?.name ?? "",
       abbreviation: initialData?.abbreviation ?? "",

@@ -4,6 +4,7 @@ namespace Domain.DTO
 {
     public class DepartmentDTO
     {
+        public Guid Id { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Department name has to be longer than 3 characters, and it can't exceed 100 characters")]
         public string Name { get; set; }
