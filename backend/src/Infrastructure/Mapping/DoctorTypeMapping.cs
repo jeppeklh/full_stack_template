@@ -20,6 +20,7 @@ namespace Infrastructure.Mapping
         {
             return new DoctorTypeDTO
             {
+                Id = entity.Id,
                 Name = entity.Name,
                 Abbreviation = entity.Abbreviation,
                 DepartmentId = entity.DepartmentId
