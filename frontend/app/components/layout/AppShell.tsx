@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
-// interface AppShellProps {
-//   children: ReactNode;
-// }
-
 export function AppShell({
   activeTab,
   onTabChange,
