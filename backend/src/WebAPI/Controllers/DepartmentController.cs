@@ -10,18 +10,15 @@ namespace WebAPI.Controllers
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _service;
-        private readonly ILogger<DepartmentController> _logger;
 
-
-        public DepartmentController(IDepartmentService service, ILogger<DepartmentController> logger)
+        public DepartmentController(IDepartmentService service)
         {
             _service = service;
-            _logger = logger;
         }
 
         [HttpGet("{departmentId:guid}")]
         public async Task<IActionResult> GetDepartment(Guid departmentId, CancellationToken ct)
-            => Ok(await _service.GetDepartmentByIdAsync(departmentId , ct));
+            => Ok(await _service.GetDepartmentByIdAsync(departmentId, ct));
 
 
         [HttpGet]
