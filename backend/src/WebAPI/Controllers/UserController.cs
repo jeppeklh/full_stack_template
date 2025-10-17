@@ -81,7 +81,8 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Update(Guid userId, [FromBody] UserDTO dto, CancellationToken ct = default)
         {
             await _userService.UpdateUserAsync(userId, dto, ct);
-            return NoContent();
+            var updatedUser = await _userService.GetByIdAsync(userId, ct);
+            return Ok(updatedUser);
         }
 
         [HttpDelete("{userId:guid}")]
@@ -90,7 +91,7 @@ namespace WebAPI.Controllers
             await _userService.DeactivateUserAsync(userId, ct);
             return NoContent();
         }
-        
+
         // [HttpDelete("Delete/{id}")]
         // public async Task<IActionResult> Delete(Guid id)
         // {

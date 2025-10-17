@@ -61,14 +61,14 @@ namespace WebAPI.Controllers
                 var doctorTypes = await _context.DoctorTypes
                     .AsNoTracking()
                     .ToListAsync();
-                
+
                 if (!doctorTypes.Any())
                 {
                     _logger.LogWarning("No doctor types found");
                     return NotFound(new { message = "No doctor types found" });
                 }
 
-                return Ok(doctorTypes);
+                return Ok(doctorTypes.Select(dt => dt.ToDTO()));
             }
 
             catch (DbException dbEx)
@@ -170,7 +170,7 @@ namespace WebAPI.Controllers
                 }
 
                 // prevent deletion if any users are associated with DoctorType
-                if (_context.Users.Any(u => u.DoctorTypeId == id))
+                if (_context.Users.Any(u => u.DoctorTypeId == id && u.UserStatus == Domain.Enums.UserStatus.Active))
                 {
                     _logger.LogWarning("Doctor type {DoctorTypeId} is in use and cannot be deleted", id);
                     return Conflict(new { message = "Doctor type is in use and cannot be deleted" });
