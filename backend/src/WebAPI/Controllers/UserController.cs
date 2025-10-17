@@ -1,12 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
-
-using Microsoft.Extensions.Logging;
-using Infrastructure.Persistence.Contexts;
-using Infrastructure.Mapping;
 using Domain.DTO;
-using Domain.Entities;
 using Domain.Interfaces.Services;
 
 namespace WebAPI.Controllers
@@ -39,6 +32,35 @@ namespace WebAPI.Controllers
             return admin is null ? NotFound() : Ok(admin);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] UserDTO dto, CancellationToken ct = default)
+        {
+            var id = await _userService.CreateUserAsync(dto, ct);
+            return CreatedAtAction(nameof(GetById), new { userId = id }, null); // Return 201, null body
+        }
+
+        [HttpPut("{userId:guid}")]
+        public async Task<IActionResult> Update(Guid userId, [FromBody] UserDTO dto, CancellationToken ct = default)
+        {
+            await _userService.UpdateUserAsync(userId, dto, ct);
+            var updatedUser = await _userService.GetByIdAsync(userId, ct);
+            return Ok(updatedUser);
+        }
+
+        [HttpDelete("{userId:guid}")]
+        public async Task<IActionResult> Deactivate(Guid userId, CancellationToken ct)
+        {
+            await _userService.DeactivateUserAsync(userId, ct);
+            return NoContent();
+        }
+
+        // [HttpDelete("Delete/{id}")]
+        // public async Task<IActionResult> Delete(Guid id)
+        // {
+        //     await _userService.DeleteUserAsync(id);
+        //     return NoContent();
+        // }
+
         [HttpGet("GetUsersWithEmployment")]
         public async Task<IActionResult> GetUsersWithEmployment(CancellationToken ct = default)
         {
@@ -69,34 +91,5 @@ namespace WebAPI.Controllers
             // }
             throw new NotImplementedException();
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserDTO dto, CancellationToken ct = default)
-        {
-            var id = await _userService.CreateUserAsync(dto, ct);
-            return CreatedAtAction(nameof(GetById), new { userId = id }, null); // Return 201, null body
-        }
-
-        [HttpPut("{userId:guid}")]
-        public async Task<IActionResult> Update(Guid userId, [FromBody] UserDTO dto, CancellationToken ct = default)
-        {
-            await _userService.UpdateUserAsync(userId, dto, ct);
-            var updatedUser = await _userService.GetByIdAsync(userId, ct);
-            return Ok(updatedUser);
-        }
-
-        [HttpDelete("{userId:guid}")]
-        public async Task<IActionResult> Deactivate(Guid userId, CancellationToken ct)
-        {
-            await _userService.DeactivateUserAsync(userId, ct);
-            return NoContent();
-        }
-
-        // [HttpDelete("Delete/{id}")]
-        // public async Task<IActionResult> Delete(Guid id)
-        // {
-        //     await _userService.DeleteUserAsync(id);
-        //     return NoContent();
-        // }
     }
 }
