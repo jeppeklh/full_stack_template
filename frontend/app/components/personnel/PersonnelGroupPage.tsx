@@ -32,6 +32,7 @@ export function PersonnelGroupPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<PersonnelGroup | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<PersonnelGroup | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (query.isLoading) {
     return <div>Henter Personalegruppper...</div>;
@@ -98,7 +99,10 @@ export function PersonnelGroupPage() {
       <AlertDialog
         open={!!deleteTarget}
         onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
+          if (!open) {
+            setDeleteTarget(null);
+            setErrorMessage(null);
+          }
         }}
       >
         <AlertDialogContent>
@@ -108,15 +112,30 @@ export function PersonnelGroupPage() {
               Er du sikker på, at du vil slette gruppen?
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {errorMessage && (
+            <div className="mt-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              {errorMessage}
+            </div>
+          )}
           <AlertDialogFooter>
             <AlertDialogCancel>Annuller</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                if (deleteTarget) {
-                  deleteMutation.mutate(deleteTarget.id);
+              onClick={async (event) => {
+                event.preventDefault(); // Prevent dialog from closing automatically
+                if (!deleteTarget) return;
+                try {
+                  await deleteMutation.mutateAsync(deleteTarget.id);
                   console.log("Delete id", deleteTarget.id);
+                  setDeleteTarget(null);
+                } catch (error: any) {
+                  console.error("Error deleting group:", error);
+
+                  // extract error message from response
+                  const message =
+                    "Personalegruppen kunne ikke slettes, en bruger er muligvis tilknyttet gruppen.";
+
+                  setErrorMessage(message);
                 }
-                setDeleteTarget(null);
               }}
             >
               Slet
