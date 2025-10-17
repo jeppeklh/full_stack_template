@@ -69,7 +69,7 @@ export function PersonnelGroupPage() {
                 {editing ? "Rediger gruppe" : "Tilføj gruppe"}
               </DialogTitle>
               <DialogDescription>
-                Udfyld felterne og klik Gem for at gemme gruppen.
+                Udfyld felterne og klik Opret for at gemme gruppen.
               </DialogDescription>
             </DialogHeader>
             <PersonnelGroupForm
