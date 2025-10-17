@@ -19,7 +19,6 @@ export function AppShell({
       <aside className="w-64 border-r bg-background p-4">
         <h1 className="mb-8 text-xl font-semibold">Vagtplan</h1>
         <nav className="space-y-2 text-sm text-muted-foreground">
-          <p>Navigation her!</p>
           <Button
           variant={activeTab === "groups" ? "default" : "ghost"}
             className="w-full justify-start"
