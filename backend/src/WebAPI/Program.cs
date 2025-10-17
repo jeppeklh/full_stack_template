@@ -86,16 +86,22 @@ app.UseExceptionHandler(appError =>
     {
         var feature = context.Features.Get<IExceptionHandlerFeature>();
         var exception = feature?.Error;
-        var status = exception switch
+        int status = exception switch
         {
             KeyNotFoundException => StatusCodes.Status404NotFound,
             ArgumentException => StatusCodes.Status400BadRequest,
+            DbUpdateException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
+
+        var detail = exception is DbUpdateException
+            ? "Invalid data: violates a constraint or references a non-existent entity."
+            : exception?.Message;
+
         context.Response.StatusCode = status;
         await Results.Problem(
             title: exception?.GetType().Name,
-            detail: exception?.Message,
+            detail: detail,
             statusCode: status
         ).ExecuteAsync(context);
     });
